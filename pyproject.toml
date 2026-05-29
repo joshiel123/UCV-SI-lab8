@@ -3,9 +3,9 @@ name = "laboratorio-adk-ucv"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Joaquinmendez2002",email = "joaquinmendez@icloud.com"}
+    {name = "Joaquinmendez2002-maker",email = "joaquinmendez2002@icloud.com"}
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "google-adk (>=2.1.0,<3.0.0)",
     "python-dotenv (>=1.2.2,<2.0.0)"

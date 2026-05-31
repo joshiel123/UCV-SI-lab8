@@ -1,88 +1,158 @@
-# Laboratorio ADK UCV
+# 🎓 Laboratorio ADK UCV — Asistente Académico Inteligente
 
-## Descripción
+[![Python Version](https://img.shields.io/badge/python-3.14%2B-blue.svg)](https://www.python.org/)
+[![Google ADK](https://img.shields.io/badge/Google%20ADK-2.1.0-orange.svg)](https://github.com/google/adk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-`laboratorio-adk-ucv` es un paquete Python diseñado para ofrecer un asistente académico en español utilizando la librería `google-adk`.
-El proyecto contiene un agente simple que responde con explicaciones claras y breves de conceptos básicos a través de una función dedicada.
+Un potente paquete de Python diseñado para ofrecer un **asistente académico en español** utilizando la librería avanzada de agentes **`google-adk`** y el modelo **Gemini Flash**.
 
-## Características principales
+Este agente interactivo está preparado para explicar conceptos complejos de informática, bases de datos y algoritmos de forma sencilla y estructurada mediante herramientas personalizadas.
 
-- Agente académico configurado con `Gemini Flash`.
-- Respuestas en español usando lenguaje sencillo.
-- Función de herramienta personalizada `explicar_concepto` para retornar resultados estructurados.
-- Estructura lista para ampliarse con más conceptos y nuevas herramientas.
+---
 
-## Estructura del proyecto
+## 🚀 Arquitectura y Flujo de Trabajo
 
-- `laboratorio-adk-ucv/pyproject.toml` — configuración del paquete y dependencias.
-- `laboratorio-adk-ucv/laboratorio-adk-ucv/agente_ucv/agent.py` — definición del agente y lógica de explicación de conceptos.
-- `laboratorio-adk-ucv/laboratorio-adk-ucv/agente_ucv/__init__.py` — inicializador del paquete.
-- `laboratorio-adk-ucv/laboratorio-adk-ucv/tests/test_agent.py` — punto para pruebas unitarias.
+El siguiente diagrama ilustra cómo el usuario interactúa con el `Agente Académico` y cómo este decide utilizar la herramienta `explicar_concepto` para obtener respuestas estructuradas:
 
-## Dependencias
+```mermaid
+graph TD
+    User([👤 Usuario]) -->|Consulta un concepto| Agent[🤖 Agente UCV]
+    Agent -->|Determina herramienta a usar| Tool{🛠️ explicar_concepto}
+    Tool -->|Concepto Registrado| Success[🟢 Explicación Encontrada]
+    Tool -->|Concepto Desconocido| NotFound[🔴 Error: No Registrado]
+    Success -->|Retorna JSON con status: success| Agent
+    NotFound -->|Retorna JSON con status: not_found| Agent
+    Agent -->|Respuesta final formateada| User
+```
 
-- Python 3.14 o superior
-- `google-adk >=2.1.0,<3.0.0`
-- `python-dotenv >=1.2.2,<2.0.0`
+---
 
-> Nota: el `pyproject.toml` actual declara `requires-python = ">=3.14"`, por lo que es importante utilizar una versión de Python compatible.
+## ✨ Características Principales
 
-## Instalación
+*   🧠 **Agente Académico Autónomo**: Configurado con `Gemini Flash` para respuestas rápidas y asertivas.
+*   🇪🇸 **Localización Completa**: Instrucciones y respuestas 100% en español con un tono pedagógico y simple.
+*   🛠️ **Herramientas Personalizadas**: Integración directa con la función `explicar_concepto` para entregar datos altamente estructurados.
+*   🧪 **Suite de Pruebas Unificadas**: Pruebas automáticas listas para verificar la robustez del agente y sus herramientas.
 
-Se recomienda usar Poetry para instalar las dependencias:
+---
+
+## 📂 Estructura del Proyecto
+
+El repositorio está organizado siguiendo las mejores prácticas de estructuración de paquetes Python:
 
 ```bash
-cd c:\Users\famil\Downloads\Ucv-ate-si-lab-08
+UCV-SI-lab8/
+│
+├── laboratorio-adk-ucv/
+│   ├── agente_ucv/
+│   │   ├── .adk/               # Base de datos de sesiones y caché del SDK
+│   │   ├── __init__.py         # Inicializador del módulo
+│   │   └── agent.py            # Definición del agente y herramientas (Core)
+│   │
+│   └── tests/
+│       └── test_agent.py       # Pruebas unitarias con pytest
+│
+├── pyproject.toml              # Gestión de dependencias y empaquetado (Poetry)
+├── poetry.lock                 # Versiones bloqueadas de dependencias
+└── README.md                   # Documentación principal (este archivo)
+```
+
+---
+
+## 🛠️ Instalación y Configuración
+
+Sigue estos sencillos pasos para instalar el entorno de desarrollo y probar el asistente:
+
+### 1. Clonar el repositorio y acceder
+Accede al directorio del proyecto en tu máquina local:
+```bash
+cd c:\Users\User\Repositorios\UCV-SI-lab8
+```
+
+### 2. Instalar dependencias con Poetry
+Asegúrate de tener [Poetry](https://python-poetry.org/) instalado y ejecuta:
+```bash
 poetry install
 ```
 
-## Uso básico
+### 3. Configurar variables de entorno
+Crea un archivo `.env` en la raíz del proyecto para configurar tu API Key de Google Gemini:
+```env
+GEMINI_API_KEY=tu_api_key_aqui
+```
 
-Importa el agente y la función de explicación desde el módulo principal:
+---
+
+## 💻 Uso Básico
+
+Importa y utiliza el asistente académico en tus propios scripts de la siguiente manera:
 
 ```python
 from laboratorio_adk_ucv.agente_ucv.agent import explicar_concepto
 
+# Consultar un concepto registrado
 resultado = explicar_concepto("api")
 print(resultado)
 ```
 
-Salida esperada:
-
-```python
-{'status': 'success', 'explicacion': 'Una API permite comunicación entre sistemas.'}
+### Salida Esperada:
+```json
+{
+  "status": "success",
+  "explicacion": "Una API permite comunicación entre sistemas."
+}
 ```
 
-## Diseño del agente
+---
 
-El agente se define en `laboratorio-adk-ucv/agente_ucv/agent.py` y utiliza:
+## 🔬 Diseño Técnico del Agente
 
-- `model="gemini-flash-latest"`
-- `name="agente_ucv"`
-- `description="Agente académico UCV"`
-- instrucciones en español con lenguaje simple
-- herramienta `explicar_concepto` para generar respuestas estructuradas
+El agente está definido en [agent.py](file:///c:/Users/User/Repositorios/UCV-SI-lab8/laboratorio-adk-ucv/agente_ucv/agent.py) y utiliza la siguiente especificación:
 
-La función `explicar_concepto` mapea conceptos comunes a explicaciones predefinidas, y devuelve un diccionario con `status` y `explicacion`.
+| Parámetro | Configuración | Descripción |
+| :--- | :--- | :--- |
+| **Model** | `gemini-flash-latest` | Modelo de lenguaje ultra-rápido para respuestas interactivas. |
+| **Name** | `agente_ucv` | Identificador interno del agente académico. |
+| **Description** | `Agente académico UCV` | Breve descripción del rol del agente. |
+| **Language** | `Español (Simple)` | Instrucción para comunicarse con claridad y sencillez. |
+| **Tools** | `explicar_concepto` | Herramienta para recuperar explicaciones predefinidas. |
 
-## Desarrollo y pruebas
+### Diccionario de Conceptos Soportados
 
-Actualmente la carpeta `tests/` existe pero el archivo `test_agent.py` está vacío.
-Para comenzar a desarrollar pruebas, crea casos que verifiquen:
+Actualmente, el sistema soporta explicaciones directas para los siguientes términos:
 
-- respuestas válidas para conceptos registrados
-- manejo de conceptos no registrados
-- formato de salida esperado
+| Concepto | Explicación en el Sistema |
+| :--- | :--- |
+| **api** | Una API permite comunicación entre sistemas. |
+| **algoritmo** | Un algoritmo es una secuencia de pasos. |
+| **base de datos** | Una base de datos almacena información. |
 
-Ejecuta las pruebas con:
+---
+
+## 🧪 Pruebas Unitarias
+
+Hemos implementado una suite completa de pruebas unitarias en [test_agent.py](file:///c:/Users/User/Repositorios/UCV-SI-lab8/laboratorio-adk-ucv/tests/test_agent.py). Puedes verificar la integridad del proyecto ejecutando:
 
 ```bash
 poetry run pytest
 ```
 
-## Recomendaciones futuras
+### Qué verifican las pruebas:
+1.  **Conceptos Existentes**: Valida que devuelva `status: success` y la definición correcta.
+2.  **Conceptos Inexistentes**: Valida que devuelva `status: not_found` y un mensaje preventivo.
+3.  **Normalización de Texto**: Asegura que el buscador sea insensible a mayúsculas y espacios en blanco.
+4.  **Configuración del Agente**: Verifica que el objeto `root_agent` tenga el nombre, modelo e instrucciones correctas.
 
-- Agregar más conceptos y respuestas en `explicar_concepto`.
-- Implementar tests unitarios en `laboratorio-adk-ucv/tests/test_agent.py`.
-- Añadir documentación de API y ejemplos de uso reales.
-- Considerar un archivo `README.md` dentro del paquete para documentación interna.
+---
+
+## 🎯 Recomendaciones de Expansión
+
+Para llevar este laboratorio al siguiente nivel:
+*   ➕ **Añadir más Conceptos**: Ampliar el diccionario interno de `explicar_concepto` en `agent.py` para cubrir más temas de ingeniería de software.
+*   🌐 **Integrar Consultas Externas**: Permitir al agente consultar a la Web o a una base de datos real si el concepto no está en el diccionario predefinido.
+*   🖥️ **Interfaz de Chat**: Crear una pequeña interfaz de consola o web (usando Streamlit) para interactuar directamente con `root_agent`.
+
+---
+
+> [!NOTE]
+> Este proyecto forma parte del Laboratorio N° 8 del curso de Sistemas Inteligentes de la **Universidad César Vallejo (UCV)**.

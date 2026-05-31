@@ -1,0 +1,34 @@
+name: SonarQube
+
+on:
+  push:
+    branches:
+      - main
+      - develop  # Agregamos develop porque es tu rama de trabajo
+  pull_request:
+    types: [opened, synchronize, reopened] # Mantenemos esto de tu versión para mayor control
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest # Ubuntu es más rápido y estándar para CI que Windows
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Esto de tu versión es excelente para SonarQube
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          [cite_start]python-version: "3.11" # Requisito del lab 
+
+      - name: Install Poetry
+        [cite_start]run: pip install poetry # Requisito del lab 
+
+      - name: Install dependencies
+        [cite_start]run: poetry install # Requisito del lab 
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          [cite_start]SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Requisito del lab
